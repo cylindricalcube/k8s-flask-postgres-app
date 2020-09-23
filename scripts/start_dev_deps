@@ -1,0 +1,10 @@
+#!/bin/bash
+
+echo "Starting Dev Dependencies..."
+
+echo "Starting PostgreSQL..."
+DOCKER_ENV=(
+    -e POSTGRES_PASSWORD="toor"
+    -e POSTGRES_USER="todoozle"
+)
+sudo docker run ${DOCKER_ENV[@]} -d -p 5432:5432 --name postgres-main postgres:12
