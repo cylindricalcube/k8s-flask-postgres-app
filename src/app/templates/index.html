@@ -2,14 +2,14 @@
 
 {% block content %}
     <h1>Welcome to To-Doozle!</h1>
-    {% if not lists|length %}
-    <h3>There don't seem to be any lists, why don't you <a href="{{ url_for('new_list') }}">Create One</a></h3>
+    {% if not items|length %}
+    <h3>There don't seem to be any items, why don't you <a href="{{ url_for('new_item') }}">Create One</a></h3>
     {% else %}
-    <h4>Want to create a <a href="{{ url_for('new_list') }}">New List</a>?</h4>
-    <h3>Here are the ToDo lists:</h3>
+    <h4>Want to create a <a href="{{ url_for('new_item') }}">New Item</a>?</h4>
+    <h3>Here are the ToDo items:</h3>
     <ul>
-        {% for list in lists %}
-        <li>{{ list.name }} <a href="/lists/{{ list.id }}">View</a></li>
+        {% for i in items %}
+        <li>{{ i.task }}</li>
         {% endfor %}
     </ul>
     {% endif %}

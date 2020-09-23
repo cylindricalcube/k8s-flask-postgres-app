@@ -1,7 +1,7 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, BooleanField, SubmitField
+from wtforms import StringField, SubmitField
 from wtforms.validators import DataRequired
 
-class NewListForm(FlaskForm):
-    name = StringField('Name', validators=[DataRequired()])
+class NewItemForm(FlaskForm):
+    task = StringField('Item', validators=[DataRequired()])
     submit = SubmitField('Create')
