@@ -1,0 +1,10 @@
+#!/bin/bash
+
+[[ -z "$TD_PROJECT_ROOT" ]] && echo "TD_PROJECT_ROOT not set, exiting.." && exit 1
+
+APP_SOURCE_DIR="${TD_PROJECT_ROOT}/src"
+VERSION=$(cat "${APP_SOURCE_DIR}/version")
+
+tar --exclude="__pycache__" --exclude="venv" -zcvf "todoozle.tar.gz" -C "$APP_SOURCE_DIR" .
+
+sudo docker build "$TD_PROJECT_ROOT" -t "cstubbs/todoozle:${VERSION}"
