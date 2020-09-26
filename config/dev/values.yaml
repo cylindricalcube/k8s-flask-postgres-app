@@ -1,6 +1,7 @@
 env: dev
 
 todoozle:
+  version: 0.1.0
   service:
     servicePort: 80
     targetPort: 5000
@@ -15,5 +16,20 @@ todoozle:
         cpu: 150m
         memory: 150Mi
 
-postgres:
-  main:
+postgres_common:
+  user: todoozle
+  db: todoozle
+  pass: supers3cret
+
+postgres_main:
+  service:
+    port: 15432
+  # StatefulSet config
+  ss:
+    containerPort: 5432
+    dataVolumeMountPath: /var/lib/postgresql/data
+    # This is the default for Docker Desktop Kubernetes cluster
+    storageClass: hostpath
+    resources:
+      req:
+        storage: 256Mi

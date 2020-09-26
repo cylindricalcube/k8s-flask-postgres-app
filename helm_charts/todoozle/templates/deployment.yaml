@@ -22,8 +22,11 @@ spec:
         app: todoozle
     spec:
       containers:
-      - image: cstubbs/todoozle:{{ .Chart.AppVersion }}
+      - image: cstubbs/todoozle:{{ .Values.todoozle.image_tag }}
         name: todoozle
+        envFrom:
+          - configMapRef:
+              name: todoozle-config
         ports:
         - name: http
           containerPort: {{ .Values.todoozle.deployment.containerPort }}

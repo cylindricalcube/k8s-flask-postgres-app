@@ -1,0 +1,17 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  labels:
+    app: todoozle-migrate
+    env: {{ .Values.env }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+  name: todoozle-migrate
+spec:
+  ttlSecondsAfterFinished: 300
+  template:
+    spec:
+      containers:
+      - name: todoozle-migrate
+        image: cstubbs/todoozle:{{ .Values.todoozle.version }}
+        command: ["TODO.py"]
+      restartPolicy: Never
