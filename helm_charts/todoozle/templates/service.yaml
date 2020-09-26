@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    env: {{ .Values.env }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    app: todoozle
+  name: todoozle
+spec:
+  ports:
+  - name: http
+    port: {{ .Values.todoozle.service.servicePort }}
+    protocol: TCP
+    targetPort: {{ .Values.todoozle.service.targetPort }}
+  selector:
+    app: todoozle
+  type: ClusterIP

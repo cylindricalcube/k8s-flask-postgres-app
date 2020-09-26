@@ -1,0 +1,55 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    env: {{ .Values.env }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    app: todoozle
+  name: todoozle
+spec:
+  replicas: {{ .Values.todoozle.deployment.replicas }}
+  selector:
+    matchLabels:
+      app: todoozle
+  strategy: 
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 1
+      maxSurge: 25%
+  template:
+    metadata:
+      labels:
+        app: todoozle
+    spec:
+      containers:
+      - image: cstubbs/todoozle:{{ .Chart.AppVersion }}
+        name: todoozle
+        ports:
+        - name: http
+          containerPort: {{ .Values.todoozle.deployment.containerPort }}
+          protocol: TCP
+        resources:
+          limits:
+            memory: {{ .Values.todoozle.deployment.resources.limits.memory }}
+          requests:
+            cpu: {{ .Values.todoozle.deployment.resources.requests.cpu }}
+            memory: {{ .Values.todoozle.deployment.resources.requests.memory }}
+        livenessProbe:
+          httpGet:
+            path: /
+            port: 5000
+            scheme: HTTP
+          initialDelaySeconds: 20
+          timeoutSeconds: 5
+          periodSeconds: 10
+          successThreshold: 1
+          failureThreshold: 5
+        readinessProbe:
+          httpGet:
+            path: /
+            port: 5000
+            scheme: HTTP
+          timeoutSeconds: 1
+          periodSeconds: 10
+          successThreshold: 1
+          failureThreshold: 3
