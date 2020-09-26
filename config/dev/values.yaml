@@ -3,8 +3,11 @@ env: dev
 todoozle:
   image_tag: 0.2.0
   secret_key: super-s3cure-dev-s3cret
+  ingress:
+    host: localhost
   service:
-    servicePort: 80
+    name: todoozle
+    port: 5000
     targetPort: 5000
   deployment:
     replicas: 1

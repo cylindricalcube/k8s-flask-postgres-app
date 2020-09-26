@@ -5,11 +5,11 @@ metadata:
     env: {{ .Values.env }}
     chart: {{ .Chart.Name }}-{{ .Chart.Version }}
     app: todoozle
-  name: todoozle
+  name: {{ .Values.todoozle.service.name }}
 spec:
   ports:
   - name: http
-    port: {{ .Values.todoozle.service.servicePort }}
+    port: {{ .Values.todoozle.service.port }}
     protocol: TCP
     targetPort: {{ .Values.todoozle.service.targetPort }}
   selector:
