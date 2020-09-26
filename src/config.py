@@ -10,4 +10,3 @@ class Config(object):
     SQLALCHEMY_DATABASE_URI = "postgresql://{}:{}@{}:{}/{}".format(
         DB_USER, DB_PASS, DB_HOST, DB_PORT, DB_NAME
     )
-    SQLALCHEMY_TRACK_MODIFICATIONS = False

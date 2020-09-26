@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  labels:
+    app: postgres-main
+    env: {{ .Values.env }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+  name: postgres-main
+spec:
+  serviceName: "postgres-main"
+  replicas: 1
+  selector:
+    matchLabels:
+      app: postgres-main
+  template:
+    metadata:
+      labels:
+        app: postgres-main
+    spec:
+      containers:
+      - name: postgres-main
+        image: postgres:{{ .Chart.AppVersion }}
+        envFrom:
+          - configMapRef:
+              name: postgres-main-config
+        ports:
+        - containerPort: {{ .Values.postgres_main.ss.containerPort }}
+          name: postgres-main
+        volumeMounts:
+        - name: postgres-main
+          mountPath: {{ .Values.postgres_main.ss.dataVolumeMountPath }}
+          subPath: postgres-main
+  volumeClaimTemplates:
+  - metadata:
+      name: postgres-main
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      storageClassName: {{ .Values.postgres_main.ss.storageClass }}
+      resources:
+        requests:
+          storage: {{ .Values.postgres_main.ss.resources.req.storage }}

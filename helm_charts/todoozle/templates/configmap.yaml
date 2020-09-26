@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: todoozle-config
+  labels:
+    app: todoozle
+    env: {{ .Values.env }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+data:
+  PG_DB_USER: {{ .Values.postgres_common.user }}
+  PG_DB_PASS: {{ .Values.postgres_common.pass }}
+  PG_DB_HOST: {{ .Values.postgres_main.service.name }}
+  PG_DB_PORT: {{ .Values.postgres_main.service.port | quote }}
+  PG_DB_NAME: {{ .Values.postgres_common.db }}
+  SECRET_KEY: {{ .Values.todoozle.secret_key }}

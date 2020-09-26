@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: postgres-main-config
+  labels:
+    app: postgres-main
+    env: {{ .Values.env }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+data:
+  POSTGRES_DB: {{ .Values.postgres_common.db }}
+  POSTGRES_USER: {{ .Values.postgres_common.user }}
+  POSTGRES_PASSWORD: {{ .Values.postgres_common.pass }}

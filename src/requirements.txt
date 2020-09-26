@@ -1,5 +1,6 @@
 flask
-flask-wtf
-flask-sqlalchemy
 flask-migrate
+flask-script
+flask-sqlalchemy
+flask-wtf
 psycopg2-binary

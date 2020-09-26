@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    env: {{ .Values.env }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    app: postgres-main
+  name: postgres-main
+spec:
+  ports:
+  - name: postgres-main
+    port: {{ .Values.postgres_main.service.port }}
+    protocol: TCP
+    targetPort: {{ .Values.postgres_main.ss.containerPort }}
+  selector:
+    app: postgres-main
+  type: ClusterIP

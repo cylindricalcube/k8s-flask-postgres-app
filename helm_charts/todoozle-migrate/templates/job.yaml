@@ -12,6 +12,13 @@ spec:
     spec:
       containers:
       - name: todoozle-migrate
-        image: cstubbs/todoozle:{{ .Values.todoozle.version }}
-        command: ["TODO.py"]
+        image: cstubbs/todoozle:{{ .Values.todoozle.image_tag }}
+        envFrom:
+        - configMapRef:
+            name: todoozle-migrate-config
+        command:
+        - "python"
+        - "manage.py"
+        - "db"
+        - "upgrade"
       restartPolicy: Never

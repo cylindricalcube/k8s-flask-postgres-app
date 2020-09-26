@@ -1,7 +1,8 @@
 env: dev
 
 todoozle:
-  version: 0.1.0
+  image_tag: 0.2.0
+  secret_key: super-s3cure-dev-s3cret
   service:
     servicePort: 80
     targetPort: 5000
@@ -23,6 +24,7 @@ postgres_common:
 
 postgres_main:
   service:
+    name: postgres-main
     port: 15432
   # StatefulSet config
   ss:
