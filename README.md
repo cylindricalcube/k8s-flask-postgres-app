@@ -1,10 +1,26 @@
 # k8s-flask-postgres-app
 
-This a project completed for a challenge, I had no knowledge of Flask prior to creating this so please forgive if anything is suboptimal in my setup of the framework.
+This a project completed for an SRE challenge.
 
-The goal was to have a TODO list Flask app running on K8s behind a load balancer, talking to a postgres master database node configured with streaming replication to a replica database node, also on K8s.
+### Project
+The goal was to have a ToDo list Flask app running on K8s behind a load balancer, talking to a postgres master database node configured with streaming replication to a replica database node, also on K8s.
 
-For a development environment I used the bundled Kubernetes installation with Docker Desktop, developed on a Windows PC using WSL 2.
+### Development Environment
+For a development environment I used the bundled Kubernetes installation with Docker Desktop, developed on a Windows PC using WSL 2 using a Debian distribution. I generally use a Macbook Pro for development but it is getting very old and I do not trust the HDD in it. 
+
+This was my first time using WSL 2 and I found it to be an excellent experience compared to Cygwin hacking and package management nightmares. Performance was ok, but I found Docker builds to be very slow. Maybe I am missing some configuration.
+
+### Infrastructure Code
+
+Tools used: [Terraform 0.12](https://www.terraform.io/)
+
+I briefly investigated using 0.13 (latest at the time) but the additional hassle of provider repositories needing explicit paths seemed like a burden that would cut into my setup time.
+
+Because I am predominantly experienced with AWS at the time completed and this challenge was to be deployed on GCP, as well as the short time window for completion, I had to rely heavily on examples found online. 
+
+I still wanted to run a production grade setup but did not have time to deeply learn all of the network settings and primitives/resources on offer from GCP. Having used a few Gruntwork products and admiring their in-depth and boundary pushing code I leaned on them for examples.
+
+Most of the terraform code is adapted in one way or another from the modules found in this repo: https://github.com/gruntwork-io/terraform-google-gke/. Thank you [Gruntwork](https://www.gruntwork.io) for your excellent work as always.
 
 ## Requirements
 
