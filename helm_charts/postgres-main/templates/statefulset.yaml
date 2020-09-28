@@ -36,6 +36,27 @@ spec:
         - name: postgres-main
           mountPath: {{ .Values.postgres_main.ss.dataVolumeMountPath }}
           subPath: postgres-main
+      initContainers:
+      - name: init-postgres-main
+        image: busybox:1.28
+        command: ['sh', '-c', ' cp /var/lib/postgresql/data/postgresql.main.conf /var/lib/postgresql/data/postgresql.conf && cp /var/lib/postgresql/data/pg_hba.main.conf /var/lib/postgresql/data/pg_hba.conf && chmod 600 /var/lib/postgresql/data/postgresql.conf && chmod 600 /var/lib/postgresql/data/pg_hba.conf']
+        volumeMounts:
+        - name: postgres-main
+          mountPath: {{ .Values.postgres_main.ss.dataVolumeMountPath }}
+          subPath: postgres-main
+        - name: postgres-main-conf-mnt
+          mountPath: /var/lib/postgresql/data/postgresql.main.conf
+          subPath: postgresql.conf
+        - name: postgres-main-hba-mnt
+          mountPath: /var/lib/postgresql/data/pg_hba.main.conf
+          subPath: pg_hba.conf
+      volumes:
+      - name: postgres-main-conf-mnt
+        secret:
+          secretName: postgres-main-conf
+      - name: postgres-main-hba-mnt
+        secret:
+          secretName: postgres-main-hba
   volumeClaimTemplates:
   - metadata:
       name: postgres-main

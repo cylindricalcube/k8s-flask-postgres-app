@@ -38,3 +38,19 @@ postgres_main:
     resources:
       req:
         storage: 256Mi
+
+postgres_replica:
+  repuser: repuser
+  reppass: r3plicationp4ssw0rd
+  service:
+    name: postgres-replica
+    port: 15433
+  # StatefulSet config
+  ss:
+    containerPort: 5432
+    dataVolumeMountPath: /var/lib/postgresql/data
+    # This is the default for Docker Desktop Kubernetes cluster
+    storageClass: hostpath
+    resources:
+      req:
+        storage: 256Mi

@@ -22,6 +22,21 @@ I still wanted to run a production grade setup but did not have time to deeply l
 
 Most of the terraform code is adapted in one way or another from the modules found in this repo: https://github.com/gruntwork-io/terraform-google-gke/. Thank you [Gruntwork](https://www.gruntwork.io) for your excellent work as always.
 
+## Database
+
+PostgreSQL is deployed with streaming replication enabled. Having never run PostgreSQL this was an interesting challenge and took me a little longer than I would have liked. Settings may be suboptimal but replication is functional across single main and replica pods. 
+
+Settings in the main instance that were needed:
+`postgresql.conf`
+```
+    #Replication Settings
+    wal_level = replica
+    max_wal_senders = 2
+    max_replication_slots = 2
+    synchronous_commit = off
+```
+
+
 ## Load Balancer Issues
 
 I had an issue when attempting to lock down the service to my personal IP address. GKE has a built-in ingress controller, so when I created an Ingress object and attached it to the Todoozle Service it automatically created a publically accessible load balancer. This appeared to make my firewall rules defined in terraform useless. 
@@ -60,7 +75,11 @@ Some things that I didn't have time to do but would be necessary in a production
     - Python end to end tests to ensure everything is working post-rollout (or during)
 - Full CI/CD setup instead of manual deployments to environments with version tracking between environments.
 - ConfigMaps should probably be immutable with SHAs added to their names for proper updates and fault tolerance
-- Better health checks and readiness checks
+- Better health checks and readiness checks for app/db
+- PostgreSQL
+    - Tune settings on the replication and other
+    - Node affinity settings 
+    - Failover settings and management (currently replication is only possible one way)
 
 
 ## Requirements
@@ -86,14 +105,6 @@ You will need:
 
 ```
 ./scripts/build
-```
-
-## Test
-
-To test you can:
-
-```
-./scripts/test
 ```
 
 ## Deploy
@@ -161,7 +172,7 @@ helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
 helm install --namespace ingress-nginx ingress-nginx ingress-nginx/ingress-nginx
 ```
 
-Otherwise continue deploying the app stack:
+#### Database
 ```
 # Deploy the main DB
 ./scripts/deploy -e <env> -c postgres-main
@@ -169,6 +180,18 @@ Otherwise continue deploying the app stack:
 # Check that the DB is running
 kubectl describe pods/postgres-main-0
 kubectl logs pods/postgres-main-0
+
+# Now you need to create the user for replication
+kubectl exec -it pods/postgres-main -- bash
+# from within container
+su - postgres
+psql -U todoozle
+> SET password_encryption = 'scram-sha-256';
+> CREATE ROLE repuser WITH REPLICATION PASSWORD '<repuser_password>' LOGIN;
+> SELECT * FROM pg_create_physical_replication_slot('replica_1_slot');
+>\q
+exit
+exit
 
 # Deploy migrations
 ./scripts/deploy -e <env> -c todoozle-migrate
