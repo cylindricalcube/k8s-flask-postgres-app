@@ -35,7 +35,10 @@ Settings in the main instance that were needed:
     max_replication_slots = 2
     synchronous_commit = off
 ```
-
+`pg_hba.conf`
+```
+host    replication     repuser         0.0.0.0/0               scram-sha-256
+```
 
 ## Load Balancer Issues
 
@@ -200,6 +203,7 @@ exit
 kubectl describe job/todoozle-migrate
 ```
 
+#### Flask App and Load Balancer
 Now is a good time to add your IP address to the `loadBalancerSourceRanges` list in secrets.yaml for your `<env>` otherwise you won't be able to reach the service.
 ```
 # Deploy Flask app
