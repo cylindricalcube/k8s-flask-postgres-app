@@ -16,6 +16,17 @@ spec:
         envFrom:
         - configMapRef:
             name: todoozle-migrate-config
+        env:
+        - name: PG_DB_PASS
+          valueFrom:
+            secretKeyRef:
+              name: postgres-main-db-pass
+              key: pass
+        - name: SECRET_KEY
+          valueFrom:
+            secretKeyRef:
+              name: todoozle-migrate-secret-key
+              key: secret-key
         command:
         - "python"
         - "manage.py"

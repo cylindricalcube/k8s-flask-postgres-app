@@ -20,6 +20,12 @@ spec:
       containers:
       - name: postgres-main
         image: postgres:{{ .Chart.AppVersion }}
+        env:
+        - name: POSTGRES_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: postgres-main-db-pass
+              key: pass
         envFrom:
           - configMapRef:
               name: postgres-main-config

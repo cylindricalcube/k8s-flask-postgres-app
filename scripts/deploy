@@ -30,13 +30,24 @@ if [[ "$DEPLOY_ENV" != "staging" ]] && [[ "$DEPLOY_ENV" != "dev" ]]; then
   echo "DEPLOY_ENV must be one of (staging|dev), you provided: $DEPLOY_ENV" && usage && exit 1
 fi
 
+USE_SOPS=true
+[[ "$DEPLOY_ENV" == "dev" ]] && USE_SOPS=false
+
 # Fill the template and run the files through a diff
-helm template "${CHARTS_DIR}/${CHART}" -f "${CONFIG_DIR}/${DEPLOY_ENV}/values.yaml" | kubectl diff --context "${DEPLOY_ENV}" -f -
+if [[ "$USE_SOPS" == "true" ]]; then
+  sops --decrypt "${CONFIG_DIR}/${DEPLOY_ENV}/secrets.yaml" | helm template "${CHARTS_DIR}/${CHART}" -f "${CONFIG_DIR}/${DEPLOY_ENV}/values.yaml" -f - | kubectl diff --context "${DEPLOY_ENV}" -f -
+else
+  helm template "${CHARTS_DIR}/${CHART}" -f "${CONFIG_DIR}/${DEPLOY_ENV}/values.yaml" | kubectl diff --context "${DEPLOY_ENV}" -f -
+fi
 
 read -p 'Proceed with kubectl apply? (N/y)' apply_confirm
 
 if [[ "$apply_confirm" == 'y' ]] || [[ "$apply_confirm" == 'Y' ]]; then
-  helm template "${CHARTS_DIR}/${CHART}" -f "${CONFIG_DIR}/${DEPLOY_ENV}/values.yaml" | kubectl apply --context "${DEPLOY_ENV}" -f -
+  if [[ "$USE_SOPS" == "true" ]]; then
+    sops --decrypt "${CONFIG_DIR}/${DEPLOY_ENV}/secrets.yaml" | helm template "${CHARTS_DIR}/${CHART}" -f "${CONFIG_DIR}/${DEPLOY_ENV}/values.yaml" -f - | kubectl apply --context "${DEPLOY_ENV}" -f -
+  else
+    helm template "${CHARTS_DIR}/${CHART}" -f "${CONFIG_DIR}/${DEPLOY_ENV}/values.yaml" | kubectl apply --context "${DEPLOY_ENV}" -f -
+  fi
 else
   echo "Deploy cancelled..." && exit 0
 fi

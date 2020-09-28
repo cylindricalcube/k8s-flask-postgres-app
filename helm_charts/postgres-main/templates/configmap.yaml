@@ -9,4 +9,3 @@ metadata:
 data:
   POSTGRES_DB: {{ .Values.postgres_common.db }}
   POSTGRES_USER: {{ .Values.postgres_common.user }}
-  POSTGRES_PASSWORD: {{ .Values.postgres_common.pass }}

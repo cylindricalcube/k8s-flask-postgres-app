@@ -1,1 +1,38 @@
-# TODO
+env: staging
+
+todoozle:
+  image_tag: 0.2.0
+  ingress:
+    host: localhost
+  service:
+    name: todoozle
+    port: 80
+    targetPort: 5000
+  deployment:
+    replicas: 3
+    containerPort: 5000
+    resources:
+      requests:
+        cpu: 100m
+        memory: 75Mi
+      limits:
+        cpu: 150m
+        memory: 150Mi
+
+postgres_common:
+  user: todoozle
+  db: todoozle
+
+postgres_main:
+  service:
+    name: postgres-main
+    port: 15432
+  # StatefulSet config
+  ss:
+    containerPort: 5432
+    dataVolumeMountPath: /var/lib/postgresql/data
+    # This is the default gce-pd storage class
+    storageClass: standard
+    resources:
+      req:
+        storage: 256Mi

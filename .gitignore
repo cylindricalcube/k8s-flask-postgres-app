@@ -2,3 +2,5 @@
 __pycache__
 venv
 *.tar.gz
+*.tfstate
+*.tfstate.backup
